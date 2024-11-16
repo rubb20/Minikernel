@@ -1,9 +1,9 @@
 /*
  *  minikernel/kernel/include/llamsis.h
  *
- *  Minikernel. Versión 1.0
+ *  Minikernel. Versiï¿½n 1.0
  *
- *  Fernando Pérez Costoya
+ *  Fernando Pï¿½rez Costoya
  *
  */
 
@@ -19,11 +19,13 @@
 #define _LLAMSIS_H
 
 /* Numero de llamadas disponibles */
-#define NSERVICIOS 3
+#define NSERVICIOS 5
 
 #define CREAR_PROCESO 0
 #define TERMINAR_PROCESO 1
 #define ESCRIBIR 2
+#define OBTENER_ID 3 //A0: se define para realizar la llamada al sistema (en el array de llamadas la llamada estarÃ¡ en el 3).
+#define DORMIR 4 //A1: se define la llamada al sistema (en el array estarÃ¡ en el 4).
 
 #endif /* _LLAMSIS_H */
 

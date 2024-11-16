@@ -1,9 +1,9 @@
 /*
  *  kernel/kernel.c
  *
- *  Minikernel. Versión 1.0
+ *  Minikernel. Versiï¿½n 1.0
  *
- *  Fernando Pérez Costoya
+ *  Fernando Pï¿½rez Costoya
  *
  */
 
@@ -23,7 +23,7 @@
  */
 
 /*
- * Función que inicia la tabla de procesos
+ * Funciï¿½n que inicia la tabla de procesos
  */
 static void iniciar_tabla_proc(){
 	int i;
@@ -33,7 +33,7 @@ static void iniciar_tabla_proc(){
 }
 
 /*
- * Función que busca una entrada libre en la tabla de procesos
+ * Funciï¿½n que busca una entrada libre en la tabla de procesos
  */
 static int buscar_BCP_libre(){
 	int i;
@@ -107,14 +107,14 @@ static void espera_int(){
 
 	printk("-> NO HAY LISTOS. ESPERA INT\n");
 
-	/* Baja al mínimo el nivel de interrupción mientras espera */
+	/* Baja al mï¿½nimo el nivel de interrupciï¿½n mientras espera */
 	nivel=fijar_nivel_int(NIVEL_1);
 	halt();
 	fijar_nivel_int(nivel);
 }
 
 /*
- * Función de planificacion que implementa un algoritmo FIFO.
+ * Funciï¿½n de planificacion que implementa un algoritmo FIFO.
  */
 static BCP * planificador(){
 	while (lista_listos.primero==NULL)
@@ -145,7 +145,7 @@ static void liberar_proceso(){
 
 	liberar_pila(p_proc_anterior->pila);
 	cambio_contexto(NULL, &(p_proc_actual->contexto_regs));
-        return; /* no debería llegar aqui */
+        return; /* no deberï¿½a llegar aqui */
 }
 
 /*
@@ -171,7 +171,7 @@ static void exc_arit(){
 	printk("-> EXCEPCION ARITMETICA EN PROC %d\n", p_proc_actual->id);
 	liberar_proceso();
 
-        return; /* no debería llegar aqui */
+        return; /* no deberï¿½a llegar aqui */
 }
 
 /*
@@ -186,7 +186,7 @@ static void exc_mem(){
 	printk("-> EXCEPCION DE MEMORIA EN PROC %d\n", p_proc_actual->id);
 	liberar_proceso();
 
-        return; /* no debería llegar aqui */
+        return; /* no deberï¿½a llegar aqui */
 }
 
 /*
@@ -207,7 +207,19 @@ static void int_terminal(){
 static void int_reloj(){
 
 	printk("-> TRATANDO INT. DE RELOJ\n");
+	BCP *lista = lista_dormidos.primero;
 
+	while (lista != NULL)
+	{
+		lista->segs_dormir--;
+		if (lista->segs_dormir <= 0)
+		{
+			lista->estado = LISTO;
+			eliminar_elem(&lista_dormidos, lista);
+			insertar_ultimo(&lista_listos, lista);
+		}
+		lista = lista->siguiente;
+	}
         return;
 }
 
@@ -267,6 +279,7 @@ static int crear_tarea(char *prog){
 		p_proc->id=proc;
 		p_proc->estado=LISTO;
 
+		p_proc->segs_dormir=0; //A1: se inicializa el atributo
 		/* lo inserta al final de cola de listos */
 		insertar_ultimo(&lista_listos, p_proc);
 		error= 0;
@@ -324,12 +337,42 @@ int sis_terminar_proceso(){
 
 	liberar_proceso();
 
-        return 0; /* no debería llegar aqui */
+        return 0; /* no deberï¿½a llegar aqui */
+}
+
+/* A0
+ * Tratamiento de llamada al sistema obtener_id. Devuelve el miembro id del proceso actual.
+ * No hace llamadas a funciones
+ */
+int sis_obtener_id(){
+	return p_proc_actual->id;
+}
+
+/* A1
+ * Tratamiento de la llamada al sistema dormir.
+ * Hace que el SO sea multiprogramado.
+ */
+int sis_dormir(){
+	BCP				*p_proc_anterior;
+	unsigned int	segundos;
+
+	segundos = leer_registro(1); //Leer del registro la informaciÃ³n sobre los segundos que debe dormir el proceso
+
+	p_proc_actual->segs_dormir = segundos * TICK;
+	p_proc_actual->estado = BLOQUEADO;
+	p_proc_anterior = p_proc_actual;
+	eliminar_elem(&lista_listos, p_proc_actual);
+	insertar_ultimo(&lista_dormidos, p_proc_actual);
+
+	p_proc_actual = planificador(); //Proceso multiprogramado, se pasa al siguiente proceso. Es necesario cambiar el contexto.
+	if (p_proc_actual != p_proc_anterior) //Pueden ser el mismo proceso en caso de que no haya mas procesos y se acabe de despertar, si esto pasa no hay que cambiar el contexto.
+		cambio_contexto(&(p_proc_anterior->contexto_regs), &(p_proc_actual->contexto_regs));
+	return (0);
 }
 
 /*
  *
- * Rutina de inicialización invocada en arranque
+ * Rutina de inicializacion invocada en arranque
  *
  */
 int main(){

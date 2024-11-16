@@ -1,9 +1,9 @@
 /*
  *  minikernel/include/kernel.h
  *
- *  Minikernel. Versión 1.0
+ *  Minikernel. Versiï¿½n 1.0
  *
- *  Fernando Pérez Costoya
+ *  Fernando Pï¿½rez Costoya
  *
  */
 
@@ -31,19 +31,21 @@
 typedef struct BCP_t *BCPptr;
 
 typedef struct BCP_t {
-        int id;				/* ident. del proceso */
-        int estado;			/* TERMINADO|LISTO|EJECUCION|BLOQUEADO*/
+        int id;						/* ident. del proceso */
+        int estado;					/* TERMINADO|LISTO|EJECUCION|BLOQUEADO*/
         contexto_t contexto_regs;	/* copia de regs. de UCP */
-        void * pila;			/* dir. inicial de la pila */
-	BCPptr siguiente;		/* puntero a otro BCP */
-	void *info_mem;			/* descriptor del mapa de memoria */
+        void * pila;				/* dir. inicial de la pila */
+		BCPptr siguiente;			/* puntero a otro BCP */
+		void *info_mem;				/* descriptor del mapa de memoria */
+		//AÃ±adido por la prÃ¡ctica:
+		unsigned int segs_dormir;	/* segundos que debe dormir el proceso*/
 } BCP;
 
 /*
  *
  * Definicion del tipo que corresponde con la cabecera de una lista
  * de BCPs. Este tipo se puede usar para diversas listas (procesos listos,
- * procesos bloqueados en semáforo, etc.).
+ * procesos bloqueados en semï¿½foro, etc.).
  *
  */
 
@@ -71,8 +73,12 @@ BCP tabla_procs[MAX_PROC];
 lista_BCPs lista_listos= {NULL, NULL};
 
 /*
+ * Variable global que representa la cola de procesos dormidos
+ */
+lista_BCPs lista_dormidos= {NULL, NULL};
+/*
  *
- * Definición del tipo que corresponde con una entrada en la tabla de
+ * Definiciï¿½n del tipo que corresponde con una entrada en la tabla de
  * llamadas al sistema.
  *
  */
@@ -87,13 +93,16 @@ typedef struct{
 int sis_crear_proceso();
 int sis_terminar_proceso();
 int sis_escribir();
-
+int sis_obtener_id(); //A0: servicio para obtener el id.
+int sis_dormir();
 /*
  * Variable global que contiene las rutinas que realizan cada llamada
  */
 servicio tabla_servicios[NSERVICIOS]={	{sis_crear_proceso},
 					{sis_terminar_proceso},
-					{sis_escribir}};
+					{sis_escribir}, 
+					{sis_obtener_id},
+					{sis_dormir} };
 
 #endif /* _KERNEL_H */
 

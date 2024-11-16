@@ -1,9 +1,9 @@
 /*
  *  usuario/include/servicios.h
  *
- *  Minikernel. Versi�n 1.0
+ *  Minikernel. Versi�n 1.0
  *
- *  Fernando P�rez Costoya
+ *  Fernando P�rez Costoya
  *
  */
 
@@ -19,7 +19,7 @@
 #ifndef SERVICIOS_H
 #define SERVICIOS_H
 
-/* Evita el uso del printf de la bilioteca est�ndar */
+/* Evita el uso del printf de la bilioteca est�ndar */
 #define printf escribirf
 
 /* Funcion de biblioteca */
@@ -29,6 +29,8 @@ int escribirf(const char *formato, ...);
 int crear_proceso(char *prog);
 int terminar_proceso();
 int escribir(char *texto, unsigned int longi);
+int obtener_id_pr(); //A0: Esta funcionalidad no es de la práctica pero se ha añadido para aprender a añadir llamadas al sistema.
+int dormir(unsigned int segundos); //A1: prototipo de la llamada a la función dormir para un proceso.
 
 #endif /* SERVICIOS_H */
 
