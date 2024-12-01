@@ -49,3 +49,18 @@ int obtener_id_pr(){ //A0: Función de usuario que realiza la llamada al sistema
 int dormir(unsigned int segundos){
 	return llamsis(DORMIR, 1, (long)segundos);
 }
+int crear_mutex(char *nombre, int tipo){
+	return llamsis(CREAR_MUTEX, 2, (long)nombre, (long)tipo);
+}
+int abrir_mutex(char *nombre){
+	return llamsis(ABRIR_MUTEX, 1, (long)nombre);
+}
+int lock(unsigned int mutexid){
+	return llamsis(LOCK_MUTEX, 1, (long)mutexid);
+}
+int unlock(unsigned int mutexid){
+	return llamsis(UNLOCK_MUTEX, 1, (long)mutexid);
+}
+int cerrar_mutex(unsigned int mutexid){
+	return llamsis(CERRAR_MUTEX, 1, (long)mutexid);
+}

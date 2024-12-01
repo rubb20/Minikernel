@@ -32,5 +32,13 @@ int escribir(char *texto, unsigned int longi);
 int obtener_id_pr(); //A0: Esta funcionalidad no es de la práctica pero se ha añadido para aprender a añadir llamadas al sistema.
 int dormir(unsigned int segundos); //A1: prototipo de la llamada a la función dormir para un proceso.
 
+#define NO_RECURSIVO 0
+#define RECURSIVO 1
+
+int crear_mutex(char *nombre, int tipo);
+int abrir_mutex(char *nombre);
+int lock(unsigned int mutexid);
+int unlock(unsigned int mutexid);
+int cerrar_mutex(unsigned int mutexid);
 #endif /* SERVICIOS_H */
 
