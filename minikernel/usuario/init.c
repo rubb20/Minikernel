@@ -75,10 +75,10 @@ ALGO COMENTE ESTA PARTE Y DESCOMENTE LA PRUEBA CORRESPONDIENTE */
 */
 
 //PRIMERA PRUEBA DE ROUND-ROBIN
-
+/*
 	if (crear_proceso("prueba_RR1")<0)
 		printf("Error creando prueba_RR1\n");
-
+*/
 
 /* SEGUNDA PRUEBA DE ROUND-ROBIN
 	if (crear_proceso("prueba_RR2")<0)
